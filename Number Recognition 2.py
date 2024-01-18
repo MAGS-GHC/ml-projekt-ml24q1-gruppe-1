@@ -10,18 +10,17 @@ mnist_dataset = tf.keras.datasets.mnist
 x_train_normalized = x_train / 255.0
 x_test_normalized = x_test / 255.0
 
-# Model definition
 model = tf.keras.Sequential([
-    tf.keras.layers.Flatten(input_shape=(28, 28)),
+    tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)),
+    tf.keras.layers.MaxPooling2D((2, 2)),
+    tf.keras.layers.Flatten(),
     tf.keras.layers.Dense(128, activation='relu'),
     tf.keras.layers.Dropout(0.2),
     tf.keras.layers.Dense(10, activation='softmax')
 ])
 
 # Compile the model
-model.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
+model.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['accuracy'])
 
 # Train the model
 history = model.fit(x_train_normalized, y_train, epochs=5, validation_data=(x_test_normalized, y_test))
@@ -60,3 +59,5 @@ for i in range(25):
     true_label = y_test[i]
     plt.xlabel(f'Predicted: {predicted_label}\nTrue: {true_label}')
 plt.show()
+
+
