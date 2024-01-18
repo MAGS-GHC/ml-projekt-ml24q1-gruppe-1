@@ -4,9 +4,15 @@ import tkinter as tk
 import win32gui
 from PIL import ImageGrab, Image
 import numpy as np
+import tensorflow as tf
 
 # Load the trained model
 model = load_model('model_hand.h5')  # Change the model file name
+
+# Enable GPU memory growth
+physical_devices = tf.config.list_physical_devices('GPU')
+for device in physical_devices:
+    tf.config.experimental.set_memory_growth(device, True)
 
 def predict_letter(img):
     # Resize image to 28x28 pixels
@@ -16,7 +22,7 @@ def predict_letter(img):
     img = np.array(img)
     # Reshape to support our model input and normalize
     img = img.reshape(1, 28, 28, 1)
-    img = img / 255.0
+    #img = img / 255.0
     # Predict the class
     res = model.predict([img])[0]
     print("Raw predictions:", res)

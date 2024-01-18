@@ -17,6 +17,11 @@ from sklearn.utils import shuffle
 from keras.preprocessing.image import ImageDataGenerator
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
+import tensorflow as tf
+
+physical_devices = tf.config.list_physical_devices('GPU')
+for device in physical_devices:
+    tf.config.experimental.set_memory_growth(device, True)
 
 # Read the data...
 data = pd.read_csv(r"C:\\laragon\www\\Ny mappe\A_Z Handwritten Data.csv").astype('float32')
@@ -97,7 +102,7 @@ lr_scheduler = LearningRateScheduler(lr_schedule)
 
 history = model.fit(datagen.flow(train_X, train_yOHE, batch_size=64),
                     steps_per_epoch=len(train_X) / 64,
-                    epochs=20,
+                    epochs=5,
                     callbacks=[reduce_lr, early_stop, lr_scheduler],
                     validation_data=(test_X, test_yOHE))
 
@@ -118,6 +123,7 @@ plt.figure(figsize=(10, 8))
 sns.heatmap(confusion_mtx, annot=True, fmt='d', cmap='Blues', xticklabels=word_dict.values(), yticklabels=word_dict.values())
 plt.xlabel('Predicted Label')
 plt.ylabel('True Label')
+plt.savefig('confusion_matrix.png')  # Save the confusion matrix plot as an image
 plt.show()
 
 # Evaluate the model on the test set
